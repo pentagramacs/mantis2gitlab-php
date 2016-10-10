@@ -1,0 +1,187 @@
+<?php
+
+return array(
+	/**
+	 * Gitlab Endpoint
+	 */
+	'endpoint' 		=> 'http://git.example.com/api/v3',
+
+	/**
+	 * Access API Token
+	 */
+	'access_token'	=> '{{ACCESS_TOKEN}}',
+
+	/**
+	 * Project where the migration will occur
+	 *
+	 * Can be the full name of the project or the ID (as integer)
+	 * 
+	 * @var mixed
+	 */
+	'project' 	=> 'group-name/project-name',
+
+	/**
+	 * Should we prefix new issue with something?
+	 *
+	 * Valid values are:
+	 *   :id - mantis number (without #)
+	 * 
+	 * @var string
+	 */
+	'prefix' => '#:id - ',
+
+	/**
+	 * Should we map mantis status to assigned labels?
+	 *
+	 * Map occurs if mantis field is found in a map on labels.php config file
+	 * 
+	 * @var boolean
+	 */
+	'map_status' => true,
+
+	/**
+	 * Should we add a title before the status?
+	 *
+	 * If it's set to a string we use that value as title
+	 *   Ex.:
+	 *     "Title: label"
+	 * 
+	 * @var string|boolean
+	 */
+	'map_status_title' => false,
+
+	/**
+	 * Should we map mantis resolution to assigned labels?
+	 *
+	 * Map occurs if mantis field is found in a map on labels.php config file
+	 * 
+	 * @var boolean
+	 */
+	'map_resolution' => false,
+
+	/**
+	 * Should we add a title before the resolution?
+	 *
+	 * If it's set to a string we use that value as title
+	 *   Ex.:
+	 *     "Title: label"
+	 * 
+	 * @var string|boolean
+	 */
+	'map_resolution_title' => false,
+
+	/**
+	 * Should we map mantis category to assigned labels?
+	 *
+	 * Map occurs if mantis field is found in a map on labels.php config file
+	 * 
+	 * @var boolean
+	 */
+	'map_category' => true,
+
+	/**
+	 * Should we add a title before the category?
+	 *
+	 * If it's set to a string we use that value as title
+	 *   Ex.:
+	 *     "Title: label"
+	 * 
+	 * @var string|boolean
+	 */
+	'map_category_title' => false,
+
+	/**
+	 * Should we map mantis severity to assigned labels?
+	 *
+	 * Map occurs if mantis field is found in a map on labels.php config file
+	 * 
+	 * @var boolean
+	 */
+	'map_severity' => false,
+
+	/**
+	 * Should we add a title before the severity?
+	 *
+	 * If it's set to a string we use that value as title
+	 *   Ex.:
+	 *     "Title: label"
+	 * 
+	 * @var string|boolean
+	 */
+	'map_severity_title' => false,
+
+	/**
+	 * Should we map mantis priority to assigned labels?
+	 *
+	 * Map occurs if mantis field is found in a map on labels.php config file
+	 * 
+	 * @var boolean
+	 */
+	'map_priority' => true,
+
+	/**
+	 * Should we add a title before the priority?
+	 *
+	 * If it's set to a string we use that value as title
+	 *   Ex.:
+	 *     "Title: label"
+	 * 
+	 * @var string|boolean
+	 */
+	'map_priority_title' => false,
+
+	/**
+	 * Should we map mantis frequency to assigned labels?
+	 *
+	 * Map occurs if mantis field is found in a map on labels.php config file
+	 * 
+	 * @var boolean
+	 */
+	'map_frequency' => false,
+
+	/**
+	 * Should we add a title before the frequency?
+	 *
+	 * If it's set to a string we use that value as title
+	 *   Ex.:
+	 *     "Title: label"
+	 * 
+	 * @var string|boolean
+	 */
+	'map_frequency_title' => false,
+
+	/**
+	 * Should we map mantis custom fields to assigned labels?
+	 *
+	 * All the field values will be exploded by "|" so, be careful about your
+	 * field value set otherwise it will be handled as multiple labels
+	 *
+	 * If the title corresponds to a mapped label, it will be used as Title.
+	 * 
+	 * Map occurs if mantis field is found in a map on labels.php config file
+	 * 
+	 * @var boolean
+	 */
+	'map_custom_fields' => true,
+
+	/**
+	 * Should we append something else at the description?
+	 *
+	 * This is a list of mantis fields
+	 * If a array is set first index is the field, second 
+	 * one is the label that will be used
+	 *
+	 * If a string is used the label will be set as the "Camel Cased" string
+	 *
+	 * array(
+	 *   'id',
+	 *   array('summary', 'Mantis Title')
+	 * );
+	 * 
+	 * @var array
+	 */
+	'append_description' => array(
+		array('steps_to_reproduce', 'Passos para Reproduzir'),
+		array('additional_information', 'Informações Adicionais'),
+	)
+);

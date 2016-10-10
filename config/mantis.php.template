@@ -1,0 +1,27 @@
+<?php
+
+return array(
+	/**
+	 * Mantis WSDL full URL
+	 */
+	'wsdl' 		=> 'http://mantis.example.com/api/soap/mantisconnect.php?wsdl',
+
+	/**
+	 * Mantis username that has at least readonly permissions
+	 */
+	'username'	=> 'username',
+
+	/**
+	 * Mantis password for the username specified
+	 */
+	'password' 	=> 'password',
+
+	/**
+	 * Project that will be migrated
+	 *
+	 * Can be the full name of the project or the ID (as integer)
+	 * 
+	 * @var mixed
+	 */
+	'project' 	=> 'Project Name'
+);

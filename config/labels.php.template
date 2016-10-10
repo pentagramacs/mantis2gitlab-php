@@ -1,0 +1,12 @@
+<?php
+
+return array(
+	/**
+	 * Status
+	 */
+	'feedback' 	=> 'feedback',
+	'assigned'	=> 'assigned',
+	'confirmed'	=> 'confirmed',
+	'resolved' 	=> 'resolved',
+	'closed' 	=> 'closed' // this case 
+);
