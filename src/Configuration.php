@@ -14,6 +14,7 @@ class Configuration {
 		}
 
 		$files = glob($this->path . '*.php');
+
 		foreach($files as $file) {
 			$pathParts = explode(DIRECTORY_SEPARATOR, $file);
 			$fileName = array_pop($pathParts);

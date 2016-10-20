@@ -6,7 +6,7 @@ use M2G\Gitlab\Contracts\BaseAbstract;
 
 class Project extends BaseAbstract {
 
-	protected $endpoint = '/projects/:id';
+	protected $endpoint = '/api/v3/projects/:id';
 	protected $raw;
 
 	public function __construct($project = null) {
@@ -45,6 +45,10 @@ class Project extends BaseAbstract {
 		return (new Label($this, null))->all();
 	}
 
+	public function milestones() {
+		return (new Milestone($this, null))->all();
+	}
+
 	public function newIssue(array $raw) {
 		if (!$this->isIssueEnabled()) {
 			throw new \Exception('This project have no Issues Feature enabled.');
@@ -52,5 +56,14 @@ class Project extends BaseAbstract {
 
 		$issue = new Issue($this, $raw);
 		return $issue->save();
+	}
+
+	public function newMilestone(array $raw) {
+		if (!$this->isIssueEnabled()) {
+			throw new \Exception('This project have no Issues Feature enabled.');
+		}
+
+		$milestone = new Milestone($this, $raw);
+		return $milestone->save();
 	}
 }

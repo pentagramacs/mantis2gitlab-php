@@ -6,7 +6,7 @@ use M2G\Gitlab\Contracts\BaseAbstract;
 
 class User extends BaseAbstract {
 
-	protected $endpoint = '/users/:id';
+	protected $endpoint = '/api/v3/users/:id';
 
 	public function __construct($raw = null) {
 		if (!is_null($raw)) {

@@ -17,6 +17,7 @@ class Project extends BaseAbstract {
 
 	public function get() {
 		$id = $this->mantis()->connection()->projects_get_user_accessible(array('id' => $this->id()));
+var_dump('get method');
 var_dump($id);
 die;
 		return $this->id;
@@ -43,13 +44,25 @@ die;
 	}
 
 	public function issues() {
-		$raw = $this->mantis()->connection()->project_get_issues($this->id());
-		$issues = array();
-
-		foreach($raw as $rawIssue) {
-			$issues[] = new Issue($rawIssue);
-		}
+		$raw = $this->mantis()->connection()->project_get_issues($this->id(), 1, -1);
+		$project = $this;
+		$issues = array_map(function($item) use ($project) {
+			$issue = new Issue($item);
+			$issue->mantis($project->mantis());
+			return $issue;
+		}, $raw);
 
 		return $issues;
 	}
+
+	public function versions() {
+		$raw = $this->mantis()->connection()->project_get_versions($this->id());
+
+		$versions = array_map(function($item) {
+			return new Version($item);
+		}, $raw);
+
+		return $versions;
+	}
+
 }

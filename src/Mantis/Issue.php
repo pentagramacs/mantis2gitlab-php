@@ -19,7 +19,7 @@ class Issue extends BaseAbstract {
 			$this->raw->$method = $params[0];
 		}
 
-		return isset($this->raw->$method) ? $this->raw->$method : null;
+		return property_exists($this->raw, $method) ? $this->raw->$method : null;
 	}
 
 	public function customFields($asArray = false) {
@@ -53,12 +53,34 @@ class Issue extends BaseAbstract {
 		return $notes;
 	}
 
+	public function attachments($asArray = false) {
+		$attachments = array();
+
+		if (!empty($this->raw->attachments)) {
+			foreach($this->raw->attachments as $raw) {
+				$customField = new Attachment($raw);
+				$customField->mantis($this->mantis());
+				if ($asArray) {
+					$attachments[] = $customField->toArray();
+				} else {
+					$attachments[] = $customField;
+				}
+			}
+		}
+
+		return $attachments;
+	}
+
 	public function dateSubmitted() {
-		return new \DateTime($this->raw->date_submitted);
+		return property_exists($this->raw, 'date_submitted') && $this->raw->date_submitted
+			   ? new \DateTime($this->raw->date_submitted) 
+			   : null;
 	}
 
 	public function dueDate() {
-		return $this->raw->due_date ? new \DateTime($this->raw->due_date) : null;
+		return property_exists($this->raw, 'due_date') && $this->raw->due_date
+			   ? new \DateTime($this->raw->due_date) 
+			   : null;
 	}
 
 	public function toArray() {

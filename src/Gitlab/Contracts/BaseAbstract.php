@@ -15,6 +15,7 @@ abstract class BaseAbstract extends M2GAbstract {
 	);
 
 	protected $params = array();
+	protected $query_params = array();
 
 	protected $gitlab;
 
@@ -34,6 +35,11 @@ abstract class BaseAbstract extends M2GAbstract {
 		$this->authorize();
 
 		$url = $this->url($this->endpoint);
+
+		if ($this->query_params) {
+			$url .= '?' . http_build_query($this->query_params);
+		}
+
 		$rawbody = $this->request($url, 'get');
 
 		return json_decode($rawbody, true);
@@ -44,6 +50,15 @@ abstract class BaseAbstract extends M2GAbstract {
 
 		$url = $this->url($this->endpoint);
 		$rawbody = $this->request($url, 'post', $data);
+
+		return json_decode($rawbody, true);
+	}
+
+	public function put($data) {
+		$this->authorize();
+
+		$url = $this->url($this->endpoint);
+		$rawbody = $this->request($url, 'put', $data);
 
 		return json_decode($rawbody, true);
 	}
@@ -59,9 +74,14 @@ abstract class BaseAbstract extends M2GAbstract {
 		curl_setopt($ch, CURLOPT_NOBODY, false); // remove body 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-		if (strtolower($method) == 'post') {
-			curl_setopt($ch, CURLOPT_URL, $url . '?' . http_build_query($postdata)); 
+		$isQueryString = strpos($url, '?') === false ? '?' : null;
+
+		if (in_array(strtolower($method), array('post'))) {
+			curl_setopt($ch, CURLOPT_URL, $url . $isQueryString . http_build_query($postdata)); 
 			curl_setopt($ch, CURLOPT_POST, 1);
+		} else {
+			curl_setopt($ch, CURLOPT_URL, $url . $isQueryString . http_build_query($postdata)); 
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
 		}
 		$rawbody = curl_exec($ch); 
 
@@ -113,7 +133,12 @@ abstract class BaseAbstract extends M2GAbstract {
 	}
 
 	public function save() {
-		$savedIssue = $this->post($this->raw());
+		if (($id = $this->raw('id')) && is_int($id) && $id > 0) {
+			$savedIssue = $this->put($this->raw());
+		} else {
+			$savedIssue = $this->post($this->raw());
+		}
+
 		$this->raw($savedIssue);
 		return $this;
 	}

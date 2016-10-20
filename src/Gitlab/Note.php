@@ -6,7 +6,7 @@ use M2G\Gitlab\Contracts\BaseAbstract;
 
 class Note extends BaseAbstract {
 
-	protected $endpoint = '/projects/:project_id/issues/:issue_id/notes/:id';
+	protected $endpoint = '/api/v3/projects/:project_id/issues/:issue_id/notes/:id';
 	protected $issue;
 
 	public function __construct($issue, $raw = null) {
@@ -30,7 +30,6 @@ class Note extends BaseAbstract {
 	public function issue($issue = null) {
 		if (!is_null($issue)) {
 			$this->issue = $issue;
-			$this->gitlab($issue->gitlab());
 			$this->params['issue_id'] = urlencode($issue->id());
 
 			$this->project($issue->project());

@@ -6,7 +6,7 @@ use M2G\Gitlab\Contracts\BaseAbstract;
 
 class Label extends BaseAbstract {
 
-	protected $endpoint = '/projects/:project_id/labels/:id';
+	protected $endpoint = '/api/v3/projects/:project_id/labels/:id';
 	protected $project;
 
 	public function __construct($project, $raw = null) {

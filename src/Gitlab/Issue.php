@@ -6,7 +6,7 @@ use M2G\Gitlab\Contracts\BaseAbstract;
 
 class Issue extends BaseAbstract {
 
-	protected $endpoint = '/projects/:project_id/issues/:id';
+	protected $endpoint = '/api/v3/projects/:project_id/issues/:id';
 	protected $project;
 
 	public function __construct($project, $raw = null) {
@@ -40,13 +40,33 @@ class Issue extends BaseAbstract {
 		return (new Note($this, null))->all();
 	}
 
+	public function close() {
+		$this->params['id'] = $this->id();
+		$return = $this->put(array(
+			'state_event' => 'close'
+		));
+
+		if (!empty($return['message'])) {
+			throw new \Exception($return['message']);
+		}
+
+		return $this;
+	}
+
 	public function all() {
-		$rawIssues = $this->get();
 		$issues = array();
 
-		foreach($rawIssues as $issue) {
-			$issues[] = new self($this->project(), $issue);
-		}
+		// get from all pages (but we don't know how many haha)
+		$page = 1;
+		do {
+			$this->query_params = array('state' => 'all', 'page' => $page);
+			$rawIssues = $this->get();
+			foreach($rawIssues as $issue) {
+				$issues[] = new self($this->project(), $issue);
+			}
+
+			$page++;
+		} while($rawIssues);
 
 		return $issues;
 	}
