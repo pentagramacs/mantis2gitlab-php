@@ -4,12 +4,12 @@ return array(
 	/**
 	 * Gitlab Endpoint
 	 */
-	'endpoint' 		=> 'http://git.example.com/api/v3',
+	'endpoint' 		=> null,
 
 	/**
 	 * Access API Token
 	 */
-	'access_token'	=> '{{ACCESS_TOKEN}}',
+	'access_token'	=> null,
 
 	/**
 	 * Project where the migration will occur
@@ -18,7 +18,7 @@ return array(
 	 * 
 	 * @var mixed
 	 */
-	'project' 	=> 'group-name/project-name',
+	'project' 	=> null,
 
 	/**
 	 * Should we prefix new issue with something?

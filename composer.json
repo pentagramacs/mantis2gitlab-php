@@ -7,7 +7,9 @@
             "email": "victor.moura@pentagrama.com.br"
         }
     ],
-    "require": {},
+    "require": {
+        "symfony/console": "^3.1"
+    },
 	"autoload" : {
 		"psr-4": {
 			"M2G\\": "src/"

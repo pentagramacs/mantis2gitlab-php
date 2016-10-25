@@ -6,7 +6,7 @@ class Configuration {
 
 	protected $configs = array();
 
-	public function __construct($path) {
+	public function __construct($path, $override = array()) {
 		$this->path = $path;
 
 		if ($this->path{strlen($this->path)-1} !== '/') {
@@ -14,13 +14,16 @@ class Configuration {
 		}
 
 		$files = glob($this->path . '*.php');
-
 		foreach($files as $file) {
 			$pathParts = explode(DIRECTORY_SEPARATOR, $file);
 			$fileName = array_pop($pathParts);
 			$configName = substr($fileName, 0, strpos($fileName, '.'));
 
 			$this->configs[$configName] = include $file;
+		}
+
+		foreach($override as $configName => $options) {
+			$this->configs[$configName] = array_merge($this->configs[$configName], $options);
 		}
 	}
 
