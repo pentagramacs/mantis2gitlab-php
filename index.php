@@ -93,8 +93,12 @@ if ($pid == -1) {
 			continue;
 		}
 
-		$handler = $mantisIssue->handler() ? $mantisIssue->handler()->name : null;
-		$assignee_id = $handler && isset($users[$handler]) ? $users[$handler]->raw('id') : null;
+		$handler = $mantisIssue->handler() && property_exists($mantisIssue->handler(), 'name') ? $mantisIssue->handler()->name : null;
+		if ($handler) {
+			$assignee_id = $handler && isset($users[$handler]) ? $users[$handler]->raw('id') : null;
+		} else {
+			$assignee_id = null;
+		}
 
 		$milestone_id = (
 			$gitlabMilestones && 

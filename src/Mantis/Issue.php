@@ -91,8 +91,9 @@ class Issue extends BaseAbstract {
 			'steps_to_reproduce' => $this->steps_to_reproduce(),
 			'additional_information' => $this->additional_information(),
 			'view_state' => $this->view_state() ? $this->view_state()->name : 'public',
-			'reporter' => $this->reporter() ? $this->reporter()->name : null,
-			'handler' => $this->handler() ? $this->handler()->name : null,
+			'reporter' => $this->reporter() && property_exists($this->reporter(), 'name') ? 
+						  $this->reporter()->name : null,
+			'handler' => $this->handler() && property_exists($this->handler(), 'name') ? $this->handler()->name : null,
 			'severity' => $this->severity() ? $this->severity()->name : null,
 			'category' => $this->category() ? $this->category() : null,
 			'reproducibility' => $this->reproducibility() ? $this->reproducibility()->name : null,

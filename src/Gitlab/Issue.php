@@ -33,7 +33,8 @@ class Issue extends BaseAbstract {
 	}
 
 	public function id() {
-		return $this->raw('id');
+		$id = $this->raw('id');
+		return is_array($id) ? $id['id'] : $id; // sanity check, fixing it elsewhere
 	}
 
 	public function notes() {

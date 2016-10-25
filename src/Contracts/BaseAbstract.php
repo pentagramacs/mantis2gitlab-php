@@ -14,11 +14,15 @@ abstract class BaseAbstract {
 
 		$value = $this->raw;
 
-		if (is_string($attrib) && isset($value[$attrib])) {
-			if (is_null($setValue)) {
-				$value = $value[$attrib];
+		if (is_string($attrib)) {
+			if (isset($value[$attrib])) {
+				if (is_null($setValue)) {
+					$value = $value[$attrib];
+				} else {
+					$value = $value[$attrib] = $setValue;
+				}
 			} else {
-				$value = $value[$attrib] = $setValue;
+				$value = null;
 			}
 		} elseif (is_array($attrib)) {
 			$value = $this->raw = $attrib;
