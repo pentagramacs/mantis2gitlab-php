@@ -3,8 +3,11 @@
 namespace M2G\Contracts;
 
 use Symfony\Component\Console\Command\Command;
+use M2G\Traits\DefaultOptions;
+
 abstract class CommandAbstract extends Command
 {
+	use DefaultOptions;
 
 	protected function sanitizeOptions(array $options) {
 		return array_filter($options, function($item) {

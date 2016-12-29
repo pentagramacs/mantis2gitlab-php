@@ -6,11 +6,13 @@ use Symfony\Component\Console\Application;
 use M2G\Command\TestCommand;
 use M2G\Command\TestMantisCommand;
 use M2G\Command\TestGitlabCommand;
+use M2G\Command\MigrateCommand;
 
 $application = new Application();
 
 $application->add(new TestCommand());
 $application->add(new TestMantisCommand());
 $application->add(new TestGitlabCommand());
+$application->add(new MigrateCommand());
 
 $application->run();

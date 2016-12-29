@@ -2,10 +2,13 @@
 
 namespace M2G\Command;
 
-use M2G\Contracts\CommandAbstract;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use M2G\Contracts\CommandAbstract;
+use M2G\Configuration;
+use M2G\Mantis;
 
 class TestMantisCommand extends CommandAbstract
 {
@@ -17,15 +20,46 @@ class TestMantisCommand extends CommandAbstract
 		$this->addMantisOptions();
 	}
 
-	protected function addMantisOptions() {
-		$this->addOption('mantis-endpoint',		'm', InputOption::VALUE_REQUIRED, 'What\'s your Mantis Endpoint WSDL?')
-			 ->addOption('mantis-username',		'u', InputOption::VALUE_REQUIRED, 'What\'s your Mantis Username?')
-			 ->addOption('mantis-password',		's', InputOption::VALUE_REQUIRED, 'What\'s your Mantis Password?')
-			 ->addOption('mantis-project',		'p', InputOption::VALUE_REQUIRED, 'What\'s your Mantis Project (can be the name or the ID)?');
-	}
-
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		// ...
+		$io = new SymfonyStyle($input, $output);
+
+		// clear options 
+		$override = $this->sanitizeOptions($input->getOptions());
+		$override = $this->splitIndexes($override);
+		$configuration = new Configuration('./config', $override);
+		$mantis = new Mantis($configuration->mantis());
+
+		$io->title('Testing connection to Mantis');
+		$io->section('Endpoint:');
+
+		try {		
+			$project = $mantis->project($configuration->mantis('project'));
+			$io->success($configuration->mantis('wsdl'));
+		} catch(\Exception $e) {
+			$io->error($configuration->mantis('wsdl'));
+		}
+
+		$io->section('Project informations:');
+
+		try {
+			$io->success(sprintf("Project: '%s'", $configuration->mantis('project') . ' (' . $project->id() . ')'));
+		} catch(\Exception $e) {
+			$io->error('Failed to get project data.');
+		}
+
+		try {
+			$mantisIssues = $project->versions();
+			$io->success(sprintf("Versions found: '%s'", count($mantisIssues)));
+		} catch(\Exception $e) {
+			$io->error('Failed to get project versions.');
+		}
+
+		try {
+			$mantisIssues = $project->issues();
+			$io->success(sprintf("Issues found: '%s'", count($mantisIssues)));
+		} catch(\Exception $e) {
+			$io->error('Failed to get project issues.');
+		}
 	}
 }

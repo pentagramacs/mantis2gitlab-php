@@ -10,9 +10,10 @@
     "require": {
         "symfony/console": "^3.1"
     },
-	"autoload" : {
-		"psr-4": {
-			"M2G\\": "src/"
-		}
+    "bin": ["bin/mantis2gitlab"],
+    "autoload" : {
+	"psr-4": {
+		"M2G\\": "src/"
 	}
+    }
 }
