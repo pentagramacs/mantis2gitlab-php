@@ -3,6 +3,7 @@
 namespace M2G\Gitlab;
 
 use M2G\Gitlab\Contracts\BaseAbstract;
+use M2G\Utils\ArrayCollection;
 
 class User extends BaseAbstract {
 
@@ -22,6 +23,6 @@ class User extends BaseAbstract {
 			$users[$user['username']] = new self($user);
 		}
 
-		return $users;
+		return new ArrayCollection($users);
 	}
 }

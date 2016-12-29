@@ -3,6 +3,7 @@
 namespace M2G\Gitlab;
 
 use M2G\Gitlab\Contracts\BaseAbstract;
+use M2G\Utils\ArrayCollection;
 
 class Note extends BaseAbstract {
 
@@ -46,6 +47,6 @@ class Note extends BaseAbstract {
 			$notes[] = new self($this->issue(), $note);
 		}
 
-		return $notes;
+		return new ArrayCollection($notes);
 	}
 }

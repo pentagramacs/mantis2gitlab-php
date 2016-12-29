@@ -3,6 +3,7 @@
 namespace M2G\Gitlab;
 
 use M2G\Gitlab\Contracts\BaseAbstract;
+use M2G\Utils\ArrayCollection;
 
 class Issue extends BaseAbstract {
 
@@ -52,23 +53,5 @@ class Issue extends BaseAbstract {
 		}
 
 		return $this;
-	}
-
-	public function all() {
-		$issues = array();
-
-		// get from all pages (but we don't know how many haha)
-		$page = 1;
-		do {
-			$this->query_params = array('state' => 'all', 'page' => $page);
-			$rawIssues = $this->get();
-			foreach($rawIssues as $issue) {
-				$issues[] = new self($this->project(), $issue);
-			}
-
-			$page++;
-		} while($rawIssues);
-
-		return $issues;
 	}
 }

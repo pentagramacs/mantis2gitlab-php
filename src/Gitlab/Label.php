@@ -3,6 +3,7 @@
 namespace M2G\Gitlab;
 
 use M2G\Gitlab\Contracts\BaseAbstract;
+use M2G\Utils\ArrayCollection;
 
 class Label extends BaseAbstract {
 
@@ -35,6 +36,6 @@ class Label extends BaseAbstract {
 			$data[$row['name']] = new $this($this->project(), $row);
 		}
 
-		return $data;
+		return new ArrayCollection($data);
 	}
 }
