@@ -24,15 +24,19 @@ class Issue extends BaseAbstract {
 
 	public function customFields($asArray = false) {
 		$customFields = array();
-		foreach($this->raw->custom_fields as $raw) {
-			$customField = new CustomField($raw);
-			if ($asArray) {
-				$customField = $customField->toArray();
-				$customFields[$customField['name']] = $customField['value'];
-			} else {
-				$customFields[] = $customField;
+
+		if (!empty($this->raw->custom_fields)) {
+			foreach($this->raw->custom_fields as $raw) {
+				$customField = new CustomField($raw);
+				if ($asArray) {
+					$customField = $customField->toArray();
+					$customFields[$customField['name']] = $customField['value'];
+				} else {
+					$customFields[] = $customField;
+				}
 			}
 		}
+
 		return $customFields;
 	}
 

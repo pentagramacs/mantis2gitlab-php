@@ -4,6 +4,7 @@ namespace M2G\Mantis;
 
 use M2G\Mantis\Contracts\BaseAbstract;
 use M2G\Mantis\Issue;
+use M2G\Utils\ArrayCollection;
 
 class Project extends BaseAbstract {
 
@@ -15,12 +16,31 @@ class Project extends BaseAbstract {
 		$this->project = $project;
 	}
 
+	public function all() {
+		return new ArrayCollection($this->mantis()->connection()->projects_get_user_accessible());
+	}
+
 	public function get() {
-		$id = $this->mantis()->connection()->projects_get_user_accessible(array('id' => $this->id()));
-var_dump('get method');
-var_dump($id);
-die;
-		return $this->id;
+		$allAccess = $this->all();
+		return $this->__searchProject($allAccess);
+	}
+
+	public function __searchProject($projects)
+	{
+		foreach($projects as $project) {
+			if ($project->name == $this->project || 
+				$project->id == $this->project || 
+				$project->id == $this->id) 
+			{
+				return (array)$project;
+			}
+
+			if ($project->subprojects && ($project = $this->__searchProject($project->subprojects))) {
+				return $project;
+			}
+		}
+
+		return array();
 	}
 
 	public function id() {
@@ -40,7 +60,7 @@ die;
 
 	public function categories() {
 		$categories = $this->mantis()->connection()->project_get_categories($this->id());
-		return $categories;
+		return new ArrayCollection($categories);
 	}
 
 	public function issues() {
@@ -52,7 +72,7 @@ die;
 			return $issue;
 		}, $raw);
 
-		return $issues;
+		return new ArrayCollection($issues);
 	}
 
 	public function versions() {
@@ -62,7 +82,7 @@ die;
 			return new Version($item);
 		}, $raw);
 
-		return $versions;
+		return new ArrayCollection($versions);
 	}
 
 }

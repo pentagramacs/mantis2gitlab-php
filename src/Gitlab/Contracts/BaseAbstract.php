@@ -3,10 +3,11 @@
 namespace M2G\Gitlab\Contracts;
 
 use M2G\Contracts\BaseAbstract as M2GAbstract;
+use M2G\Utils\ArrayCollection;
 
 abstract class BaseAbstract extends M2GAbstract {
 
-	protected $user_agent = 'Mantis2Gitlab/1.0';
+	protected $userAgent = 'Mantis2Gitlab/1.0';
 
 	protected $headers = array(
 		'Accept: application/json',
@@ -15,7 +16,7 @@ abstract class BaseAbstract extends M2GAbstract {
 	);
 
 	protected $params = array();
-	protected $query_params = array();
+	protected $queryParams = array();
 
 	protected $gitlab;
 
@@ -27,17 +28,17 @@ abstract class BaseAbstract extends M2GAbstract {
 		return $this->gitlab;
 	}
 
-	public function get($id = null) {
-		if (!is_null($id)) {
-			$this->params['id'] = urlencode($id);
+	public function get($uid = null) {
+		if (!is_null($uid)) {
+			$this->params['id'] = urlencode($uid);
 		}
 
 		$this->authorize();
 
 		$url = $this->url($this->endpoint);
 
-		if ($this->query_params) {
-			$url .= '?' . http_build_query($this->query_params);
+		if ($this->queryParams) {
+			$url .= '?' . http_build_query($this->queryParams);
 		}
 
 		$rawbody = $this->request($url, 'get');
@@ -65,34 +66,35 @@ abstract class BaseAbstract extends M2GAbstract {
 
 	public function request($url, $method = 'get', $postdata = array()) {
 		// we are the parent 
-		$ch = curl_init(); 
-		curl_setopt($ch, CURLOPT_URL, $url); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
-		curl_setopt($ch, CURLOPT_USERAGENT, $this->user_agent);
-		curl_setopt($ch, CURLOPT_HEADER, false); 
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($ch, CURLOPT_NOBODY, false); // remove body 
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$curl = curl_init(); 
+		curl_setopt($curl, CURLOPT_URL, $url); 
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $this->headers);
+		curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
+		curl_setopt($curl, CURLOPT_HEADER, false); 
+		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($curl, CURLOPT_NOBODY, false); // remove body 
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 		$isQueryString = strpos($url, '?') === false ? '?' : null;
 
-		if (in_array(strtolower($method), array('post'))) {
-			curl_setopt($ch, CURLOPT_URL, $url . $isQueryString . http_build_query($postdata)); 
-			curl_setopt($ch, CURLOPT_POST, 1);
-		} else {
-			curl_setopt($ch, CURLOPT_URL, $url . $isQueryString . http_build_query($postdata)); 
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-		}
-		$rawbody = curl_exec($ch); 
+		curl_setopt($curl, CURLOPT_URL, $url . $isQueryString . http_build_query($postdata)); 
+		curl_setopt($curl, CURLOPT_CUSTOMREQUEST, strtoupper($method));
 
-		if ($error = curl_error($ch)) {
+		if (in_array(strtolower($method), array('post'))) {
+			curl_setopt($curl, CURLOPT_URL, $url . $isQueryString . http_build_query($postdata)); 
+			curl_setopt($curl, CURLOPT_POST, 1);
+		}
+
+		$rawbody = curl_exec($curl); 
+
+		if ($error = curl_error($curl)) {
 			throw new \Exception($error);
 		}
 
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); 
-		curl_close($ch); 
+		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE); 
+		curl_close($curl); 
 
-		pcntl_wait($ch); //Protect against Zombie children 
+		pcntl_wait($curl); //Protect against Zombie children 
 
 		if ($httpCode === 403) {
 			throw new \Exception('The access_token used is not authorized.', 403);
@@ -103,6 +105,24 @@ abstract class BaseAbstract extends M2GAbstract {
 		}
 
 		return $rawbody;
+	}
+
+	public function all() {
+		$data = array();
+
+		// get from all pages (but we don't know how many haha)
+		$page = 1;
+		do {
+			$this->queryParams = array('state' => 'all', 'page' => $page);
+			$raw = $this->get();
+			foreach($raw as $item) {
+				$data[] = new $this($this->project, $item);
+			}
+
+			$page++;
+		} while($raw);
+
+		return new ArrayCollection($data);
 	}
 
 	public function url($endpoint) {
@@ -133,11 +153,9 @@ abstract class BaseAbstract extends M2GAbstract {
 	}
 
 	public function save() {
-		if (($id = $this->raw('id')) && is_int($id) && $id > 0) {
-			$savedIssue = $this->put($this->raw());
-		} else {
-			$savedIssue = $this->post($this->raw());
-		}
+		$savedIssue = (($uid = $this->raw('id')) && is_int($uid) && $uid > 0) ? 
+					  $this->put($this->raw()) :
+					  $this->post($this->raw());
 
 		$this->raw($savedIssue);
 		return $this;

@@ -3,8 +3,9 @@
 namespace M2G\Mantis;
 
 use stdClass;
+use M2G\Mantis\Contracts\BaseAbstract;
 
-class Version {
+class Version extends BaseAbstract {
 
 	public function __construct($raw = null) {
 		if (is_object($raw)) {
@@ -12,14 +13,6 @@ class Version {
 		} else {
 			$this->raw = new stdClass();
 		}
-	}
-
-	public function __call($method, $params = array()) {
-		if (count($params)) {
-			$this->raw->$method = $params[0];
-		}
-
-		return isset($this->raw->$method) ? $this->raw->$method : null;
 	}
 
 	public function dateOrder() {

@@ -30,7 +30,7 @@ class Gitlab {
 			return $instance;
 		}
 		
-		throw new \Exception('Method ' . $className . ' does not exist');
+		throw new \Exception('Method ' . $subName . ' does not exist');
 	}
 
 }

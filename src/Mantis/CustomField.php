@@ -8,33 +8,30 @@ use M2G\Mantis\Contracts\BaseAbstract;
 class CustomField extends BaseAbstract {
 
 	public function __construct($raw = null) {
+		$this->raw = new stdClass();
+		
 		if (is_object($raw)) {
 			$this->raw = $raw;
-		} else {
-			$this->raw = new stdClass();
 		}
+	}
+
+	protected function __getField($field, $value = null) {
+		if (!isset($this->raw->field)) {
+			$this->raw->field = new stdClass();
+		}
+		if (!is_null($value)) {
+			$this->raw->field->$field = $value;
+		}
+
+		return isset($this->raw->field->$field) ? $this->raw->field->$field : null;
 	}
 
 	public function id($id = null) {
-		if (!isset($this->raw->field)) {
-			$this->raw->field = new stdClass();
-		}
-		if (!is_null($id)) {
-			$this->raw->field->id = $id;
-		}
-
-		return isset($this->raw->field->id) ? $this->raw->field->id : null;
+		return $this->__getField('id', $id);
 	}
 
 	public function name($name = null) {
-		if (!isset($this->raw->field)) {
-			$this->raw->field = new stdClass();
-		}
-		if (!is_null($name)) {
-			$this->raw->field->name = $name;
-		}
-
-		return isset($this->raw->field->name) ? $this->raw->field->name : null;
+		return $this->__getField('name', $name);
 	}
 
 	public function value($value = null) {
@@ -43,14 +40,6 @@ class CustomField extends BaseAbstract {
 		}
 
 		return isset($this->raw->value) ? $this->raw->value : null;
-	}
-
-	public function __call($method, $params = array()) {
-		if (count($params)) {
-			$this->raw->$method = $params[0];
-		}
-
-		return isset($this->raw->$method) ? $this->raw->$method : null;
 	}
 
 	public function toArray() {

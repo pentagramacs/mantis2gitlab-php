@@ -16,4 +16,11 @@ abstract class BaseAbstract extends M2GAbstract {
 		return $this->mantis;
 	}
 
+	public function __call($method, $params = array()) {
+		if (count($params)) {
+			$this->raw->$method = $params[0];
+		}
+
+		return isset($this->raw->$method) ? $this->raw->$method : null;
+	}
 }

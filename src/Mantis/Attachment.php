@@ -15,14 +15,6 @@ class Attachment extends BaseAbstract {
 		}
 	}
 
-	public function __call($method, $params = array()) {
-		if (count($params)) {
-			$this->raw->$method = $params[0];
-		}
-
-		return isset($this->raw->$method) ? $this->raw->$method : null;
-	}
-
 	public function download() {
 		return $this->mantis()->connection()->issue_attachment_get($this->id());
 	}

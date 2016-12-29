@@ -3,8 +3,9 @@
 namespace M2G\Mantis;
 
 use stdClass;
+use M2G\Mantis\Contracts\BaseAbstract;
 
-class Note {
+class Note extends BaseAbstract {
 
 	public function __construct($raw = null) {
 		if (is_object($raw)) {
@@ -12,14 +13,6 @@ class Note {
 		} else {
 			$this->raw = new stdClass();
 		}
-	}
-
-	public function __call($method, $params = array()) {
-		if (count($params)) {
-			$this->raw->$method = $params[0];
-		}
-
-		return isset($this->raw->$method) ? $this->raw->$method : null;
 	}
 
 	public function dateSubmitted() {
@@ -33,7 +26,7 @@ class Note {
 	public function toArray() {
 		return array(
 			'id' => $this->id(),
-			'reporter' => $this->reporter()->name,
+			'reporter' => !empty($this->reporter()->name) ? $this->reporter()->name : null,
 			'text' => $this->text(),
 			'view_state' => $this->view_state()->name,
 			'date_submitted' => $this->dateSubmitted(),

@@ -3,6 +3,7 @@
 namespace M2G\Gitlab;
 
 use M2G\Gitlab\Contracts\BaseAbstract;
+use M2G\Utils\ArrayCollection;
 
 class Milestone extends BaseAbstract {
 
@@ -25,23 +26,5 @@ class Milestone extends BaseAbstract {
 		}
 
 		return $this->project;
-	}
-
-	public function all() {
-		$milestones = array();
-
-		// get from all pages (but we don't know how many haha)
-		$page = 1;
-		do {
-			$this->query_params = array('state' => 'all', 'page' => $page);
-			$rawMilestones = $this->get();
-			foreach($rawMilestones as $milestone) {
-				$milestones[] = new self($this->project, $milestone);
-			}
-
-			$page++;
-		} while($rawMilestones);
-
-		return $milestones;
 	}
 }
