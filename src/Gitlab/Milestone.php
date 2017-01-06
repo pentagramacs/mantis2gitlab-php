@@ -27,4 +27,13 @@ class Milestone extends BaseAbstract {
 
 		return $this->project;
 	}
+
+	public function all() {
+		$milestones = parent::all();
+		$arr = [];
+		foreach($milestones as $milestone) {
+			$arr[$milestone->raw('title')] = $milestone;
+		}
+		return new ArrayCollection($arr);
+	}
 }
