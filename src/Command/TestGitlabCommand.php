@@ -34,10 +34,14 @@ class TestGitlabCommand extends CommandAbstract
 		$io->section('Endpoint:');
 
 		try {		
-			$project = $gitlab->project($configuration->gitlab('project'));
+			$project = $gitlab->project($configuration->gitlab('project'))->get();
 			$io->success($configuration->gitlab('endpoint'));
 		} catch(\Exception $e) {
 			$io->error($configuration->gitlab('endpoint'));
+		}
+
+		if (empty($project)) {
+			return false;
 		}
 
 		$io->section('Project informations:');

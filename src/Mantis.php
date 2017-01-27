@@ -10,7 +10,16 @@ class Mantis {
 	protected $credentials = array();
 	protected $connection;
 
-	public function __construct(array $configuration) {
+	public function __construct($configuration) {
+		if (
+			empty($configuration['wsdl']) || 
+			empty($configuration['username']) || 
+			empty($configuration['password']) ||
+			empty($configuration['project'])
+		) {
+			throw new \Exception('You are missing configuration settings. You MUST set wsdl, username, password and project.' . PHP_EOL . 'Check the options below.');
+		}
+
 		$this->wsdl = $configuration['wsdl'];
 		$this->credentials = array(
 			'username' => $configuration['username'],
@@ -41,9 +50,6 @@ class Mantis {
 			return $instance;
 		}
 
-		var_dump('method does not exists');
-		var_dump($method, $params);die;
-		
 		throw new \Exception('Method ' . $className . ' does not exist');
 	}
 

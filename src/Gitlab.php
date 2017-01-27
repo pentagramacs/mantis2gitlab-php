@@ -8,7 +8,15 @@ class Gitlab {
 
 	protected $configuration = array();
 
-	public function __construct(array $configuration) {
+	public function __construct($configuration) {
+                if (
+                        empty($configuration['endpoint']) ||
+                        empty($configuration['access_token']) ||
+                        empty($configuration['project']) 
+                ) {
+                        throw new \Exception('You are missing configuration settings. You MUST set endpoint, access_token and project.' . PHP_EOL . 'Check the options below.');
+                }
+
 		$this->configuration = $configuration;
 	}
 

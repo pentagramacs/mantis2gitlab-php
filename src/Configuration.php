@@ -18,11 +18,14 @@ class Configuration {
 			$pathParts = explode(DIRECTORY_SEPARATOR, $file);
 			$fileName = array_pop($pathParts);
 			$configName = substr($fileName, 0, strpos($fileName, '.'));
-
+	
 			$this->configs[$configName] = include $file;
 		}
 
 		foreach($override as $configName => $options) {
+			if (empty($this->configs[$configName])) {
+				$this->configs[$configName] = array();
+			}
 			$this->configs[$configName] = array_merge($this->configs[$configName], $options);
 		}
 	}
