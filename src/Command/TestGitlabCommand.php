@@ -34,7 +34,7 @@ class TestGitlabCommand extends CommandAbstract
 		$io->section('Endpoint:');
 
 		try {		
-			$project = $gitlab->project($configuration->gitlab('project'))->get();
+			$project = $gitlab->project($configuration->gitlab('project'));
 			$io->success($configuration->gitlab('endpoint'));
 		} catch(\Exception $e) {
 			$io->error($configuration->gitlab('endpoint'));
@@ -54,14 +54,14 @@ class TestGitlabCommand extends CommandAbstract
 
 		try {
 			$gitlabIssues = $project->milestones();
-			$io->success(sprintf("Milestones found: '%s'", count($gitlabIssues)));
+			$io->success(sprintf("Milestones found: '%s'", $gitlabIssues->count()));
 		} catch(\Exception $e) {
 			$io->error('Failed to get project milestones.');
 		}
 
 		try {
 			$gitlabIssues = $project->issues();
-			$io->success(sprintf("Issues found: '%s'", count($gitlabIssues)));
+			$io->success(sprintf("Issues found: '%s'", $gitlabIssues->count()));
 		} catch(\Exception $e) {
 			$io->error('Failed to get project issues.');
 		}
