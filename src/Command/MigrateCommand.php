@@ -234,7 +234,7 @@ class MigrateCommand extends CommandAbstract
 			? $milestones[$issue->target_version()]->raw('id')
 			: null;
 
-			$description .= $this->__handleAttachments($description, $issue, $progress);
+			$description = $this->__handleAttachments($description, $issue, $progress);
 
 			$newIssueData = array(
 				'title' => $title,
