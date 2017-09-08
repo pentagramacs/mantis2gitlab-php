@@ -45,21 +45,21 @@ class TestMantisCommand extends CommandAbstract
 		try {
 			$io->success(sprintf("Project: '%s'", $configuration->mantis('project') . ' (' . $project->id() . ')'));
 		} catch(\Exception $e) {
-			$io->error('Failed to get project data.');
+			$io->error('Failed to get project data: ' . $e->getMessage());
 		}
 
 		try {
 			$mantisIssues = $project->versions();
-			$io->success(sprintf("Versions found: '%s'", count($mantisIssues)));
+			$io->success(sprintf("Versions found: '%s'", $mantisIssues->count()));
 		} catch(\Exception $e) {
-			$io->error('Failed to get project versions.');
+			$io->error('Failed to get project versions: ' . $e->getMessage());
 		}
 
 		try {
 			$mantisIssues = $project->issues();
-			$io->success(sprintf("Issues found: '%s'", count($mantisIssues)));
+			$io->success(sprintf("Issues found: '%s'", $mantisIssues->count()));
 		} catch(\Exception $e) {
-			$io->error('Failed to get project issues.');
+			$io->error('Failed to get project issues: ' . $e->getMessage());
 		}
 	}
 }
